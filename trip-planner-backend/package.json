@@ -1,0 +1,43 @@
+{
+  "name": "trip-planner-backend",
+  "version": "1.0.0",
+  "description": "Production-grade AI Trip Planner backend — aggregates flights, trains, hotels, taxis, attractions & generates AI-optimized itineraries",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "lint": "eslint src/",
+    "test": "jest --coverage"
+  },
+  "keywords": ["trip-planner", "travel", "ai", "gemini", "express", "mongodb"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google/genai": "^1.0.0",
+    "amadeus": "^9.0.0",
+    "argon2": "^0.41.0",
+    "axios": "^1.7.0",
+    "compression": "^1.7.5",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.0",
+    "express": "^4.21.0",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^7.4.0",
+    "helmet": "^8.0.0",
+    "hpp": "^0.2.3",
+    "joi": "^17.13.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.8.0",
+    "morgan": "^1.10.0",
+    "node-cron": "^3.0.3",
+    "pdfkit": "^0.15.0",
+    "winston": "^3.15.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
