@@ -2,20 +2,20 @@ import axios from "axios";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
+// Module-scoped token storage (memory only — never persisted)
+let _accessToken: string | null = null;
+
 const api = axios.create({
   baseURL: API_BASE_URL,
-  withCredentials: true, // send cookies (refresh token)
+  withCredentials: true,
   headers: { "Content-Type": "application/json" },
   timeout: 30000,
 });
 
 // ── Request interceptor: attach access token ──
 api.interceptors.request.use((config) => {
-  if (typeof window !== "undefined") {
-    const token = (window as Record<string, unknown>).__accessToken as string | undefined;
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+  if (_accessToken) {
+    config.headers.Authorization = `Bearer ${_accessToken}`;
   }
   return config;
 });
@@ -50,17 +50,14 @@ api.interceptors.response.use(
           {},
           { withCredentials: true }
         );
-        const newToken = data.data.accessToken;
-        if (typeof window !== "undefined") {
-          (window as Record<string, unknown>).__accessToken = newToken;
-        }
-        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        _accessToken = data.data.accessToken;
+        originalRequest.headers.Authorization = `Bearer ${_accessToken}`;
         processQueue(null);
         return api(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError);
+        _accessToken = null;
         if (typeof window !== "undefined") {
-          (window as Record<string, unknown>).__accessToken = null;
           window.location.href = "/login";
         }
         return Promise.reject(refreshError);
@@ -75,17 +72,12 @@ api.interceptors.response.use(
 
 /** Set the access token for all subsequent requests */
 export function setAccessToken(token: string | null) {
-  if (typeof window !== "undefined") {
-    (window as Record<string, unknown>).__accessToken = token;
-  }
+  _accessToken = token;
 }
 
 /** Get current access token */
 export function getAccessToken(): string | null {
-  if (typeof window !== "undefined") {
-    return ((window as Record<string, unknown>).__accessToken as string) || null;
-  }
-  return null;
+  return _accessToken;
 }
 
 export default api;

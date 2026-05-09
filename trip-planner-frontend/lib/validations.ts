@@ -21,7 +21,7 @@ export const registerSchema = z
         "Must include uppercase, lowercase, number, and special character"
       ),
     confirmPassword: z.string(),
-    preferredCurrency: z.string().default("INR"),
+    preferredCurrency: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
